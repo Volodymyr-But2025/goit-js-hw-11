@@ -48,19 +48,27 @@ form.addEventListener('submit', event => {
 
   clearGallery();
   console.log(searchQuery);
-  getImagesByQuery(searchQuery).then(data => {
-    console.log(data.hits);
-    hideLoader();
-    if (data.hits.length === 0) {
+
+  getImagesByQuery(searchQuery)
+    .then(data => {
+      console.log(data.hits);
+      hideLoader();
+      if (data.hits.length === 0) {
+        iziToast.error({
+          title: 'Error',
+          message:
+            'Sorry, there are no images matching your search query. Please try again!',
+        });
+        return;
+      }
+      createGallery(data.hits);
+    })
+    .catch(error => {
+      hideLoader();
+      console.log(error);
       iziToast.error({
         title: 'Error',
-        message:
-          'Sorry, there are no images matching your search query. Please try again!',
+        message: `An error occurred while fetching images: ${error.message}`,
       });
-      return;
-    }
-    createGallery(data.hits);
-  });
+    });
 });
-showLoader();
-hideLoader();
